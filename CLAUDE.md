@@ -18,6 +18,9 @@ powershell -File tools\build-portable.ps1                  # → dist\FluenTTY-P
   minor for features, patch for fixes) and add a `## <version> — <date>` section to `CHANGELOG.md` in plain,
   user-facing words (what people notice, not how it's built; a few bullets). The app shows it after updates
   and it becomes the GitHub release notes; a ProtocolTests check fails if the section is missing.
+- **GitHub:** public repo https://github.com/nmsgitit/FluenTTY (`main`), which is also `Updater.Repository`.
+  Commit as `nmsgitit <338382383+nmsgitit@users.noreply.github.com>` (repo-local git config; never a real
+  email). `PuTTY\` is git-ignored: a local reference only. Commit and push each change with its version bump.
 - **Releasing:** `powershell -File tools\publish-release.ps1` (needs `gh auth login`) builds both editions,
   writes `SHA256SUMS.txt` and creates release `v<version>` on GitHub with the changelog section as notes.
   Push the code (`git push`) first. Never re-use or delete a published version number; release a new one.
@@ -80,7 +83,13 @@ diagnostic log.
    The user may have their own copy running (installed, or a portable with a `FluenTTY-Portable-*`
    process name). Set `"singleInstance": false` in the scratch settings.json or your launch is handed to
    *their* window (it opens a tab there and exits), and expect the M5 check to report "skipped" (it refuses
-   to probe someone's live instance). Stop only processes you started (by PID).
+   to probe someone's live instance). Stop only processes you started (by PID), and drive only those:
+   **always pass `-ProcessId <pid>` to `tools\dev\ui.ps1`** — without it, it searches every process named
+   FluenTTY, including the user's own installed copy.
+   End-to-end update test without touching the user's install: `dotnet publish -c Debug -p:Portable=true -o
+   <scratch>\e2e`, seed `<scratch>\e2e\FluenTTY Data\`, run with `FLUENTTY_PRETEND_VERSION=<older>` and
+   invoke Update now / Restart now by PID; check the exe hash equals the release digest and the data survived.
+   Don't test the installer update on this machine: the user has an all-users install in Program Files.
 3. UI: launch the Debug exe, drive it with `tools\dev\ui.ps1` (by accessible name), capture with
    `tools\dev\screenshot.ps1 -Hwnd <hwnd from 'ui.ps1 windows'> -Out x.png`, then look at the PNG.
    Type into a terminal with `ui.ps1 settext -Name Terminal -Value "ls`n"` (the terminal's automation

@@ -15,7 +15,7 @@
     <ApplicationIcon>Assets\FluenTTY.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <!-- Bump on every change (major.minor.patch) and add a matching section to ..\CHANGELOG.md. -->
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <Company>FluenTTY</Company>
     <Product>FluenTTY</Product>
     <Description>A tabbed remote management client built on Fluent 2.</Description>

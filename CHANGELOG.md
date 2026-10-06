@@ -4,6 +4,9 @@
      Write for users, not developers: short plain sentences about what they'll notice.
      Every version in FluenTTY.csproj needs a "## <version>" section here (a test checks it). -->
 
+## 1.2.1 — 6 October 2026
+- Clearer update message: it now says which version is available and which version you are on.
+
 ## 1.2.0 — 6 October 2026
 - FluenTTY now tells you when a new version is out and can install it for you. You'll find the options in Settings › Updates, including a switch to turn update checks off.
 - After an update, a short list like this one shows what changed. You can turn it off if you'd rather not see it.

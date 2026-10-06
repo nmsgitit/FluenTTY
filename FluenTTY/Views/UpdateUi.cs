@@ -69,7 +69,7 @@ public sealed class UpdateBar : Border
         _release = release;
         _downloaded = null;
         bool canInstall = Updater.CanInstall(release, out var reason);
-        Set("", $"FluenTTY {release.Number} is available. You have {Updater.Current.ToString(3)}.");
+        Set("\uE896", $"FluenTTY version {release.Number} is available. You are on version {Updater.Current.ToString(3)}.");
         if (canInstall) AddButton("Update now", UpdateNow, accent: true);
         else AddButton("Download", () => Updater.OpenReleasePage(release), accent: true, tip: reason + " The download page opens in your browser.");
         AddButton("What's new", () => WhatsNew.ShowRelease(_host.HostWindow, release));
@@ -79,7 +79,7 @@ public sealed class UpdateBar : Border
 
     private void ShowDownloading()
     {
-        Set("", $"Downloading FluenTTY {_release!.Number}…");
+        Set("\uE896", $"Downloading FluenTTY {_release!.Number}…");
         _progress.Value = 0;
         _progress.IsIndeterminate = true;
         _progress.Visibility = Visibility.Visible;
@@ -88,14 +88,14 @@ public sealed class UpdateBar : Border
 
     private void ShowReady()
     {
-        Set("", $"FluenTTY {_release!.Number} is downloaded and ready to install.");
+        Set("\uE895", $"FluenTTY {_release!.Number} is downloaded and ready to install.");
         AddButton("Restart to update", Restart, accent: true);
         AddClose();
     }
 
     private void ShowError(string message)
     {
-        Set("", message);
+        Set("\uE783", message);
         AddButton("Try again", UpdateNow);
         AddButton("Open download page", () => Updater.OpenReleasePage(_release), accent: true);
         AddClose();
@@ -126,7 +126,7 @@ public sealed class UpdateBar : Border
 
     private void AddClose()
     {
-        var b = new Button { Content = "", ToolTip = "Hide until FluenTTY starts again", Margin = new Thickness(6, 0, 0, 0) };
+        var b = new Button { Content = "\uE711", ToolTip = "Hide until FluenTTY starts again", Margin = new Thickness(6, 0, 0, 0) };
         b.SetResourceReference(StyleProperty, "SmallIconButton");
         System.Windows.Automation.AutomationProperties.SetName(b, "Hide update");
         b.Click += (_, _) => Hide();
@@ -271,10 +271,10 @@ public static class UpdateCheck
         }
         if (release == null)
         {
-            FluentDialog.Info(owner, "You're up to date", $"FluenTTY {Updater.Current.ToString(3)} is the latest version.");
+            FluentDialog.Info(owner, "You're up to date", $"You are on version {Updater.Current.ToString(3)}, the latest version of FluenTTY.");
             return;
         }
         if (Application.Current.MainWindow is MainWindow main) main.ShowUpdate(release);
-        FluentDialog.Info(owner, "Update available", $"FluenTTY {release.Number} is available. Use Update now in the bar at the top of the FluenTTY window to install it.");
+        FluentDialog.Info(owner, "Update available", $"FluenTTY version {release.Number} is available. You are on version {Updater.Current.ToString(3)}.\n\nUse Update now in the bar at the top of the FluenTTY window to install it.");
     }
 }
