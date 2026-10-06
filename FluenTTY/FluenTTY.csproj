@@ -1,0 +1,65 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!-- Plain net10.0-windows: no WinRT APIs are used, and the Windows SDK projection would add 53 MB. -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <!-- WinForms only for AxHost/WindowsFormsHost (the RDP ActiveX control). -->
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>FluenTTY</RootNamespace>
+    <AssemblyName>FluenTTY</AssemblyName>
+    <ApplicationIcon>Assets\FluenTTY.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <!-- Bump on every change (major.minor.patch) and add a matching section to ..\CHANGELOG.md. -->
+    <Version>1.2.0</Version>
+    <Company>FluenTTY</Company>
+    <Product>FluenTTY</Product>
+    <Description>A tabbed remote management client built on Fluent 2.</Description>
+    <Copyright>MIT</Copyright>
+    <!-- ThemeMode (Fluent theme) is still flagged as an evaluation feature. WFO0003: DPI awareness is set in
+         app.manifest on purpose (WPF owns the process; WinForms only hosts the RDP control). -->
+    <NoWarn>$(NoWarn);WPF0001;CA1416;WFO0003</NoWarn>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <DebugType>embedded</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- Portable build: dotnet publish -p:Portable=true (see tools\build-portable.ps1).
+       Same code; PORTABLE keeps settings next to the exe and skips anything that touches the registry. -->
+  <PropertyGroup Condition="'$(Portable)' == 'true'">
+    <DefineConstants>$(DefineConstants);PORTABLE</DefineConstants>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <!-- Uncompressed on purpose, like FluxCap Portable: compressed single-file exes trip EDR heuristics. -->
+    <EnableCompressionInSingleFile>false</EnableCompressionInSingleFile>
+    <IntermediateOutputPath>obj\portable\</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- WinForms and WPF share type names (Application, Button, MessageBox...); WPF wins. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\FluenTTY.ico" />
+    <Resource Include="Assets\FluenTTY.png" />
+    <EmbeddedResource Include="Licenses\*.txt" />
+    <EmbeddedResource Include="..\CHANGELOG.md" LogicalName="CHANGELOG.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.3.1.120" />
+    <PackageReference Include="FluentFTP" Version="55.0.0" />
+    <PackageReference Include="SSH.NET" Version="2026.0.0" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.12" />
+  </ItemGroup>
+
+</Project>
